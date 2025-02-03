@@ -240,17 +240,20 @@ def cleanup_user():
     temp_dir = folder_paths.get_user_directory()
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)   
+    os.makedirs(temp_dir, exist_ok=True) 
 
 
 def cleanup_input():
     temp_dir = folder_paths.get_input_directory()
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)
+    os.makedirs(temp_dir, exist_ok=True) 
   
 def cleanup_output():
     temp_dir = folder_paths.get_output_directory()
     if os.path.exists(temp_dir):
         shutil.rmtree(temp_dir, ignore_errors=True)
+    os.makedirs(temp_dir, exist_ok=True) 
         
             
 def start_comfyui(asyncio_loop=None):
@@ -258,15 +261,15 @@ def start_comfyui(asyncio_loop=None):
     Starts the ComfyUI server using the provided asyncio event loop or creates a new one.
     Returns the event loop, server instance, and a function to start the server asynchronously.
     """
+    cleanup_user()
+    cleanup_input()
+    cleanup_output()
+    
     if args.temp_directory:
         temp_dir = os.path.join(os.path.abspath(args.temp_directory), "temp")
         logging.info(f"Setting temp directory to: {temp_dir}")
         folder_paths.set_temp_directory(temp_dir)
-        
     cleanup_temp()
-    cleanup_user()
-    cleanup_input()
-    cleanup_output()
 
     if args.windows_standalone_build:
         try:
@@ -323,6 +326,3 @@ if __name__ == "__main__":
         logging.info("\nStopped server")
 
     cleanup_temp()
-    cleanup_user()
-    cleanup_input()
-    cleanup_output()
